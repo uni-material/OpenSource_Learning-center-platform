@@ -1,0 +1,47 @@
+package com.acme.center.platform.learning.domain.model.valueobjects;
+
+import com.acme.center.platform.learning.domain.model.aggregates.Course;
+import com.acme.center.platform.learning.domain.model.entities.LearningPathItem;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.OneToMany;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Embeddable
+public class LearningPath {
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<LearningPathItem> learningPathItems;
+
+    public LearningPath(){
+        this.learningPathItems = new ArrayList<>();
+    }
+
+    public void addItem(Course course, Long tutorialId, LearningPathItem nextItem){
+        LearningPathItem learningPathItem = new LearningPathItem(course, tutorialId, nextItem);
+        this.learningPathItems.add(learningPathItem);
+    }
+
+    public void addItem(Course course, Long tutorialId){
+        LearningPathItem learningPathItem = new LearningPathItem(course, tutorialId, null);
+        LearningPathItem originalLastItem = null;
+        if(!this.learningPathItems.isEmpty()){
+            originalLastItem = this.getLastItemInLearningPath();
+        }
+
+        this.learningPathItems.add(learningPathItem);
+        if(originalLastItem != null) originalLastItem.updateNextItem(learningPathItem);
+    }
+
+    public LearningPathItem getLastItemInLearningPath(){
+        return learningPathItems.stream().filter(item -> item.getNextItem() == null)
+                .findFirst().orElse(null);
+    }
+
+    public void addItem(Course course, Long turorialId, Long nextTutorialId){
+        //TODO: Implement and call getLearningPathItemWithTutorialId(nextTutorialId)
+    }
+
+}
