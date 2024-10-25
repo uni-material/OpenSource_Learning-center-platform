@@ -38,6 +38,15 @@ public class Course extends AuditableAbstractAggregateRoot<Course> {
     }
 
 
+    public void addTutorialToLearningPath(Long tutorialId){
+        learningPath.addItem(this, tutorialId);
+    }
+
+    public void addTutorialToLearningPath(Long tutorialId, Long nextTutorialId){
+        learningPath.addItem(this, tutorialId, nextTutorialId);
+    }
+
+
 
 
 }
