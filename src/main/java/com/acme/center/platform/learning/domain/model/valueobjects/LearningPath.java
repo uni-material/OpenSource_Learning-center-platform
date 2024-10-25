@@ -40,8 +40,22 @@ public class LearningPath {
                 .findFirst().orElse(null);
     }
 
-    public void addItem(Course course, Long turorialId, Long nextTutorialId){
-        //TODO: Implement and call getLearningPathItemWithTutorialId(nextTutorialId)
+    public LearningPathItem getLearningPathItemWithTutorialId(Long tutorialId){
+        return learningPathItems.stream()
+                .filter(item -> item.getTutorialId().equals(tutorialId))
+                .findFirst().orElse(null);
     }
+
+    public void addItem(Course course, Long tutorialId, Long nextTutorialId){
+        LearningPathItem nextItem = this.getLearningPathItemWithTutorialId(nextTutorialId);
+        this.addItem(course, tutorialId, nextItem);
+    }
+
+    public Long getFirstTutorialIdInLearningPath(){
+        return this.learningPathItems.getFirst().getTutorialId();
+    }
+
+
+
 
 }
