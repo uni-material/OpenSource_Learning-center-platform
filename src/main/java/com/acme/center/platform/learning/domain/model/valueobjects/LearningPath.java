@@ -56,6 +56,19 @@ public class LearningPath {
     }
 
 
+    public Long getNextTutorialIdLearningPath(Long tutorialId){
+        LearningPathItem item = this.getLearningPathItemWithTutorialId(tutorialId);
+        return item != null ? item.getNextItem().getTutorialId() : null;
+    }
+
+    public boolean isLastTutorialInLearningPath(Long currentTutorialId){
+        return getNextTutorialIdLearningPath(currentTutorialId) == null;
+    }
+
+    public boolean isEmpty(){
+        return this.learningPathItems.isEmpty();
+    }
+
 
 
 }
