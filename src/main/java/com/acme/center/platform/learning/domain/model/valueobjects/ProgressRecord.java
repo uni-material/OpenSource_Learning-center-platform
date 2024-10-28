@@ -50,13 +50,13 @@ public class ProgressRecord {
         //obtener tutorial
         //Objeto  + nombrepropio = función que devuelve un objeto
         ProgressRecordItem progressRecordItem = getProgressRecordItemWithTutorial(tutorialId);
-        if(Objects.nonNull(progressRecordItem)){
-            if (progressRecordItem.isNotStarted()){
-                progressRecordItem.start();
-            }
-            else throw new IllegalStateException("Tutorial with this Id is already started or completed");
-        }
-        else throw new IllegalStateException("Tutorial with this ID is not in progress record");
+
+        if(Objects.isNull(progressRecordItem)){
+            throw new IllegalStateException("Tutorial with this ID is not in the progress record");
+        };
+
+        if (progressRecordItem.isNotStarted()) progressRecordItem.start();
+            else throw new IllegalStateException("Tutorial with this ID is already started or completed");
 
     }
 
