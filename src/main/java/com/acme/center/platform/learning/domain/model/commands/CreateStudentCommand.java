@@ -28,8 +28,5 @@ public record CreateStudentCommand(String firstName, String lastName, String ema
         }
     }
 
-    }
-
-
-
 }
+
