@@ -1,12 +1,12 @@
 package com.acme.center.platform.learning.domain.model.aggregates;
 
+import com.acme.center.platform.learning.domain.model.events.TutorialCompleteEvent;
 import com.acme.center.platform.learning.domain.model.valueobjects.AcmeStudentRecordId;
 import com.acme.center.platform.learning.domain.model.valueobjects.EnrollmentStatus;
+import com.acme.center.platform.learning.domain.model.valueobjects.LearningPath;
+import com.acme.center.platform.learning.domain.model.valueobjects.ProgressRecord;
 import com.acme.center.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 //enrollment -> matricula
@@ -25,7 +25,8 @@ public class Enrollment extends AuditableAbstractAggregateRoot<Enrollment> {
 
     private EnrollmentStatus status;
 
-    //TODO: Add Progress Record
+    @Embedded
+    private ProgressRecord progressRecord;
 
     //siempre debe haber un constructor sin parametros
     public Enrollment(){
@@ -35,12 +36,13 @@ public class Enrollment extends AuditableAbstractAggregateRoot<Enrollment> {
         this.acmeStudentRecordId = studentRecordId;
         this.course = course;
         this.status = EnrollmentStatus.REQUESTED;
-        //TODO: Initialize Progress Record
+        this.progressRecord = new ProgressRecord();
     }
 
     public void confirm(){
         this.status = EnrollmentStatus.CONFIRM;
-        //TODO: Initialize Progress Record
+        this.progressRecord.initializeProgressRecord(this, course.getLearningPath());
+
 
     }
 
@@ -69,8 +71,10 @@ public class Enrollment extends AuditableAbstractAggregateRoot<Enrollment> {
     }
 
     public void completeTutorial(Long tutorialId){
-        //TODO: Update Progress Record
+        //Update Progress Record
+        this.progressRecord.completeTutorial(tutorialId, course.getLearningPath());
         // Emit the tutorial Completed Event
+        this.registerEvent(new TutorialCompleteEvent(this, this.getId(), tutorialId));
     }
 
 }
